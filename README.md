@@ -61,3 +61,12 @@ flights_app/
 │   └── detail.html      # Seat availability (part c)
 └── flights.sql          # Database schema + data
 ```
+## Screenshots
+<img width="1470" height="925" alt="q11" src="https://github.com/user-attachments/assets/98664127-61e3-436d-ab03-5ee33cc51e76" />
+<img width="1470" height="925" alt="q12" src="https://github.com/user-attachments/assets/a494b27a-41b7-4e8d-a4d5-6abe811a6785" />
+<img width="1470" height="925" alt="q13" src="https://github.com/user-attachments/assets/f901141f-6cc7-438a-b7f9-71655533e439" />
+<img width="1470" height="925" alt="q14" src="https://github.com/user-attachments/assets/90de9409-6bd0-472c-b53a-e43568cc7d49" />
+
+
+
+
