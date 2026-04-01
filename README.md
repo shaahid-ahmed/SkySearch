@@ -1,5 +1,5 @@
 # SkySearch - Flight Booking Web App
-NYU CS-GY 6083 Spring 2026 — Problem Set 3, Problem 1
+NYU CS-GY 6083 Spring 2026 - Problem Set 3, Problem 1
 
 ## Setup
 
