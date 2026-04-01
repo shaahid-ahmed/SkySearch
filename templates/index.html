@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}SkySearch - Find Flights{% endblock %}
+
+{% block content %}
+<h1>Find your<br>flight.</h1>
+<p class="sub">Search available flights by route and date range.</p>
+
+<div class="card">
+  <h2>Search Flights</h2>
+  <form method="POST" action="/">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="origin">Origin Airport Code</label>
+        <input
+          type="text"
+          id="origin"
+          name="origin"
+          maxlength="3"
+          placeholder="e.g. JFK"
+          value="{{ form.get('origin', '') }}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="destination">Destination Airport Code</label>
+        <input
+          type="text"
+          id="destination"
+          name="destination"
+          maxlength="3"
+          placeholder="e.g. LAX"
+          value="{{ form.get('destination', '') }}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="date_from">From Date</label>
+        <input
+          type="date"
+          id="date_from"
+          name="date_from"
+          value="{{ form.get('date_from', '') }}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="date_to">To Date</label>
+        <input
+          type="date"
+          id="date_to"
+          name="date_to"
+          value="{{ form.get('date_to', '') }}"
+          required
+        />
+      </div>
+    </div>
+    <button type="submit" class="btn">Search Flights &rarr;</button>
+  </form>
+</div>
+
+{% if error %}
+  <div class="notice">{{ error }}</div>
+{% endif %}
+
+{% if flights is not none and flights|length > 0 %}
+  <h2>{{ flights|length }} flight{{ 's' if flights|length != 1 }} found</h2>
+
+  <div class="list-header">
+    <span>Flight</span>
+    <span>Route</span>
+    <span>Airline</span>
+    <span>Date</span>
+    <span>Departure</span>
+    <span></span>
+  </div>
+
+  <div class="flight-list">
+    {% for f in flights %}
+    <a
+      class="flight-row"
+      href="/flight/{{ f.flight_number }}/{{ f.departure_date }}"
+    >
+      <span class="flight-num">{{ f.flight_number }}</span>
+
+      <span class="route">
+        {{ f.origin_code }}
+        <span class="route-arrow">&#8594;</span>
+        {{ f.dest_code }}
+      </span>
+
+      <span class="pill">{{ f.airline_name }}</span>
+
+      <span class="flight-date">
+        {{ f.departure_date.strftime('%b %d, %Y') }}
+      </span>
+
+      <span class="dep-time">
+        {{ f.departure_time.strftime('%H:%M') if f.departure_time is not string else f.departure_time[:5] }}
+        <span style="color:var(--muted);font-size:.75rem;">GMT</span>
+      </span>
+
+      <span class="cta-link">View seats &rarr;</span>
+    </a>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

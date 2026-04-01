@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}
+  {% if detail %}{{ detail.flight_number }} &mdash; {{ detail.departure_date }}{% else %}Flight Detail{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="back">
+  <a href="/" class="btn btn-outline">&larr; Back to search</a>
+</div>
+
+{% if error %}
+  <div class="notice">{{ error }}</div>
+{% endif %}
+
+{% if detail %}
+
+<h1>{{ detail.flight_number }}</h1>
+<p class="sub">
+  {{ detail.origin_name }} ({{ detail.origin_code }})
+  &rarr;
+  {{ detail.dest_name }} ({{ detail.dest_code }})
+  &mdash;
+  {{ detail.departure_date.strftime('%A, %B %d, %Y') }}
+</p>
+
+<!-- Seat stats -->
+<div class="stat-strip">
+  <div class="stat">
+    <span class="stat-val">{{ detail.capacity }}</span>
+    <span class="stat-label">Total seats</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val red">{{ detail.booked }}</span>
+    <span class="stat-label">Booked</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val green">{{ detail.available }}</span>
+    <span class="stat-label">Available</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val">
+      {{ ((detail.booked / detail.capacity) * 100) | round | int }}%
+    </span>
+    <span class="stat-label">Load factor</span>
+  </div>
+</div>
+
+<!-- Flight info -->
+<div class="card">
+  <h2>Flight details</h2>
+  <table class="info-table">
+    <tr>
+      <td>Airline</td>
+      <td>{{ detail.airline_name }}</td>
+    </tr>
+    <tr>
+      <td>Aircraft</td>
+      <td>{{ detail.plane_type }}</td>
+    </tr>
+    <tr>
+      <td>Origin</td>
+      <td>{{ detail.origin_name }}, {{ detail.origin_city }} ({{ detail.origin_code }})</td>
+    </tr>
+    <tr>
+      <td>Destination</td>
+      <td>{{ detail.dest_name }}, {{ detail.dest_city }} ({{ detail.dest_code }})</td>
+    </tr>
+    <tr>
+      <td>Departure time</td>
+      <td>
+        {{ detail.departure_time.strftime('%H:%M') if detail.departure_time is not string else detail.departure_time[:5] }}
+        GMT
+      </td>
+    </tr>
+    <tr>
+      <td>Duration</td>
+      <td>{{ detail.duration }}</td>
+    </tr>
+  </table>
+</div>
+
+<!-- Seat map -->
+<div class="card">
+  <h2>Seat map</h2>
+  <div style="display:flex;gap:1.5rem;margin-bottom:1rem;align-items:center;">
+    <span style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--muted);">
+      <span class="seat taken" style="width:20px;height:20px;font-size:0;border-radius:3px;"></span>
+      Booked
+    </span>
+    <span style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--muted);">
+      <span class="seat free"  style="width:20px;height:20px;font-size:0;border-radius:3px;"></span>
+      Available
+    </span>
+  </div>
+
+  {% set booked_seats = detail.seats | map(attribute='seat_number') | list %}
+
+  <div class="seat-grid">
+    {% for n in range(1, detail.capacity + 1) %}
+      {% if n in booked_seats %}
+        <div class="seat taken" title="Seat {{ n }} — booked">{{ n }}</div>
+      {% else %}
+        <div class="seat free"  title="Seat {{ n }} — available">{{ n }}</div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% if detail.seats %}
+<div class="card">
+  <h2>Passenger manifest</h2>
+  <table class="info-table">
+    {% for s in detail.seats %}
+    <tr>
+      <td>Seat {{ s.seat_number }}</td>
+      <td>{{ s.passenger_name }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+
+{% elif not error %}
+  <div class="notice">Flight not found.</div>
+{% endif %}
+
+{% endblock %}
