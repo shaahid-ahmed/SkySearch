@@ -17,11 +17,25 @@ def get_conn():
     return psycopg2.connect(**DB_CONFIG)
 
 
+def get_airports():
+    try:
+        conn = get_conn()
+        cur  = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT airport_code, name, city FROM Airport ORDER BY city, airport_code")
+        airports = cur.fetchall()
+        cur.close()
+        conn.close()
+        return airports
+    except Exception:
+        return []
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
-    flights = None
-    error   = None
-    form    = {}
+    flights  = None
+    error    = None
+    form     = {}
+    airports = get_airports()
 
     if request.method == "POST":
         origin      = request.form.get("origin", "").strip().upper()
@@ -61,7 +75,7 @@ def index():
             except Exception as e:
                 error = f"Database error: {e}"
 
-    return render_template("index.html", flights=flights, error=error, form=form)
+    return render_template("index.html", flights=flights, error=error, form=form, airports=airports)
 
 
 @app.route("/flight/<flight_number>/<departure_date>")
