@@ -107,19 +107,7 @@
   </div>
 </div>
 
-{% if detail.seats %}
-<div class="card">
-  <h2>Passenger manifest</h2>
-  <table class="info-table">
-    {% for s in detail.seats %}
-    <tr>
-      <td>Seat {{ s.seat_number }}</td>
-      <td>{{ s.passenger_name }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-</div>
-{% endif %}
+
 
 {% elif not error %}
   <div class="notice">Flight not found.</div>
